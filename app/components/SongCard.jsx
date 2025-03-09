@@ -1,16 +1,25 @@
 import { MdOutlinePlaylistAdd } from "react-icons/md";
 import React from 'react'
 
-const SongCard = ({ title, image, channelTitle, videoId }) => {
+const SongCard = ({ title, image, channelTitle, videoId, loadSetter, currentSongSetter }) => {
 
 
   const playSong = async (id) => {
-    const response = await fetch(`api/ytdl?id=${id}`)
-    console.log("hello bhaiii", id)
-    const data = await response.json();
-    console.log(data)
-    let aud = new Audio(data.audioLink)
-    aud.play();
+    loadSetter(true)
+    try{
+      const response = await fetch(`api/ytdl?id=${id}`)
+      console.log("hello bhaiii", id)
+      const data = await response.json();
+      console.log(data)
+      let aud = new Audio(data.audioLink)
+      currentSongSetter({name: title,singer: channelTitle,image:  image})
+      aud.play();
+
+    }catch(error){
+      console.log(error);
+    }finally{
+      loadSetter(false)
+    }
   }
 
 
@@ -34,7 +43,7 @@ const SongCard = ({ title, image, channelTitle, videoId }) => {
         </div>
       </div>
 
-      <div className='w-7 h-7 sm:w-12 sm:h-2 bg-[#313131] transition duration-300 rounded-[50%] flex justify-center items-center hover:bg-[grey] active:bg-[grey] mr-[20px]'>
+      <div className='w-7 h-7 sm:w-12 sm:h-12 bg-[#313131] transition duration-300 rounded-[50%] flex justify-center items-center hover:bg-[grey] active:bg-[grey] mr-[20px]'>
         <MdOutlinePlaylistAdd size={35} />
       </div>
     </div >
